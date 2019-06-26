@@ -1,0 +1,212 @@
+$arrow-size: 10px;
+
+@mixin arrow-left($size:$arrow-size, $color: $grey-light) {
+	width: 0;
+	height: 0;
+	border-top: $size solid transparent;
+	border-bottom: $size solid transparent;
+	border-right: $size solid $color;
+}
+
+@mixin arrow-right($size:$arrow-size, $color: $grey-light) {
+	width: 0;
+	height: 0;
+	border-top: $size solid transparent;
+	border-bottom: $size solid transparent;
+	border-left: $size solid $color;
+}
+
+@mixin arrow-up($size:$arrow-size, $color: $grey-light) {
+	width: 0;
+	height: 0;
+	border-left: $size solid transparent;
+	border-right: $size solid transparent;
+	border-bottom: $size solid $color;
+}
+@mixin displayContent {
+	display: block;
+	content: '';
+	position: absolute;
+}
+@mixin border($color, $side, $width: 3px) {
+	border-#{$side}-color: $color;
+	border-#{$side}-width: $width;
+}
+
+@mixin dot {
+	width: 5rem;
+	height: 5rem;
+	background: radial-gradient(circle at center, white 10%, $grey-dark 10%, $grey-dark 30%, white 31%, white 100%);
+}
+//pseidoelement base style
+.timeline,
+.timeline-item,
+.timeline-item__text {
+	&:after {
+		@include displayContent;
+	}
+}
+
+//Stacked 1 column layout
+.timeline {
+	position: relative;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	//vertical line
+	&:after {
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		height: 100%;
+		width: 2px;
+		background: $grey-light;
+	}
+}
+
+.timeline-item {
+	position: relative;
+	margin-bottom: 3em;
+	z-index: 1;
+	&__text {
+		border: 1px solid $grey-light;
+		padding: 2em;
+	}
+	h2 {
+		color: $grey-dark;
+		text-transform: uppercase;
+		font-size: 2rem;
+	}
+}
+
+.timeline-item__date {
+	position: relative;
+	text-align: center;
+	time {
+		display: block;
+		background-color: white;
+	}
+}
+.timeline-item__text {
+  position: relative;
+}
+@media screen and (max-width: $desktop) {
+	.timeline-item__text {
+		&:after {
+			top: 0;
+			left: 50%;
+			transform: translateY(-100%) translateX(-50%);
+			@include arrow-up;
+		}
+	}
+	.timeline-item__date {
+    margin-bottom: 1em;
+    time {
+      padding: .5rem 0;
+    }
+	}
+}
+
+//change layout to 2 columns
+@media screen and (min-width: $desktop) {
+	.timeline-item {
+		display: flex;
+		flex: 1 1 100%;
+		align-items: center;
+		&:after {
+			top: 50%;
+			left: 50%;
+			transform: translateY(-50%) translateX(-50%);
+			@include dot;
+		}
+		&:nth-child(odd) {
+			.timeline-item__date {
+				text-align: right;
+				margin-right: 4em;
+			}
+			.timeline-item__text {
+				margin-left: 4em;
+				&:after {
+					top: 50%;
+					left: 0;
+					right: auto;
+					transform: translateY(-50%) translateX(-100%);
+					@include arrow-left;
+				}
+			}
+		}
+		&:nth-child(even) {
+			.timeline-item__text {
+				order: -1;
+				text-align: right;
+				margin-right: 4em;
+				&:after {
+					top: 50%;
+					right: 0;
+					left: auto;
+					transform: translateY(-50%) translateX(100%);
+					@include arrow-right;
+				}
+			}
+			.timeline-item__date {
+				text-align: left;
+				margin-left: 4em;
+			}
+		}
+  }
+  //Select every fifth list item starting at first
+.timeline-item:nth-child(4n + 1) {
+	.timeline-item__text {
+		@include border(lightblue, right);
+	}
+}
+.timeline-item:nth-child(4n + 2) {
+	.timeline-item__text {
+		@include border(green, left);
+	}
+}
+.timeline-item:nth-child(4n + 3) {
+	.timeline-item__text {
+		@include border(red, right);
+	}
+}
+.timeline-item:nth-child(4n + 4) {
+	.timeline-item__text {
+		@include border(black, left);
+	}
+}
+	.timeline-item__text {
+		max-width: 45%;
+	}
+	.timeline-item__date {
+		width: auto;
+		flex-grow: 2;
+	}
+	//use grid for modern browsers
+	@supports (display: grid) {
+		.timeline-item {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-column-gap: 8em;
+			&:nth-child(odd) {
+				.timeline-item__text {
+					margin-left: 0;
+				}
+				.timeline-item__date {
+					margin-right: 0;
+				}
+			}
+			&:nth-child(even) {
+				.timeline-item__text {
+					margin-right: 0;
+				}
+				.timeline-item__date {
+					margin-left: 0;
+				}
+			}
+		}
+		.timeline-item__text {
+			max-width: 100%;
+		}
+	}
+}
